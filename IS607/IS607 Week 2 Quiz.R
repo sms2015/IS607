@@ -11,13 +11,17 @@ my20vector<-c(5,4,8,9,5,6,2,3,8,4,6,7,2,3,5,7,3,1,4,6)
 as.character(my20vector)
 #output: "5" "4" "8" "9" "5" "6" "2" "3" "8" "4" "6" "7" "2" "3" "5" "7" "3" "1" "4" "6"
 
-#### 3. and 4. ####
+#### 3. ####
 #Use R to convert the vector from question 1 into a vector of factors.
-#Use R to show how many levels the vector in the previous question has.
-#the as.factor function shows levels
-as.factor(my20vector)
+factormy20vector=as.factor(my20vector)
+factormy20vector
 #output: 5 4 8 9 5 6 2 3 8 4 6 7 2 3 5 7 3 1 4 6
 #        Levels: 1 2 3 4 5 6 7 8 9
+
+#### 4. ####
+#Use R to show how many levels the vector in the previous question has.
+levels(factormy20vector)
+#output: "1" "2" "3" "4" "5" "6" "7" "8" "9"
 
 #### 5.####
 #Use R to create a vector that takes the vector from question 1 and performs
