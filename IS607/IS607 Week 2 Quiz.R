@@ -119,7 +119,7 @@ measurements<-read.csv("c:/path_on_local_machine..../measurements.txt", sep="\t"
 #### 12. ####
 #Show the code that will read in a delimited file with a pipe separator (the “|” symbol) 
 # from a website location. (You may make up an appropriate URL.)
-testfile<-read.csv("http://www.sampleURL/data/testfile.txt", sep="\|")
+pipedelimfile<-read.table("http://homepages.wmich.edu/~m3schul1/pipetest.psv",header=FALSE ,sep="|")
 
 #### 13. ####
 #Write a loop that calculates 12-factorial.
