@@ -188,21 +188,45 @@ twovectors(i,j)
 #Write a function that takes a character vector and returns the substring of three 
 #characters that begins with the first vowel in the string. Have the function handle 
 #gracefully substrings where this isn't possible.
-k<-c("apple","orange","grape","plum")
-v<-c("a","e","i","o","u")
-k
-v
-threechar<-function(k)
-{  
-    k %in% v
-#as a test I did this also:
-    "apple" %in% "a"
-#this shows all false when run, even though clearly there is an "a" in "apple", when run for numerical vectors in question 3 it works fine.
-#example: which(small0 %in% big0). Is there a different syntax for character vectors?
 
+k<-c("apple","orange","grape","plum")
+
+threechar<-function(k)
+{
+  n=length(k)
+  L<-c()
+  v<-c("a","e","i","o","u")
+  # see note at the bottom of this question
+  for (i in 1:n)
+  { 
+    print(i)
+    #find location of each vowel in the ith element of k
+    a=regexpr("a",k[i])
+    e=regexpr("e",k[i])
+    i=regexpr("i",k[i])
+    o=regexpr("o",k[i])
+    u=regexpr("u",k[i])
+    nv=c(a,e,i,o,u)
+    #find and replace negative 1 with 1000 so -1 will not be the minimum
+    neg1=which(nv %in% -1)
+    nnv=replace(nv,neg1,1000)
+    #determine the first position of a vowel, and 2 beyond for 3 letters
+    first=min(nnv)
+    third=first+2
+    #check if the lenght of the third place after the vowel is greater than the length of the element
+    #if so return NA, otherwise set the ith place in new strin L to the substring of k using first and third.
+    if (third>length(k[i])){
+      L[i]=NA
+    }else {
+      L[i]<-substring(k[i],first,third)
+    }
+}
+L
 }
 
-
+# I can't get the for loop to work properly, if I substitute values instead of i, and manually iterate it works
+#but it keeps returning null for L when I use the loop, so I think it might be an issue with the loop syntax, but 
+#I'm not sure how to fix it.
 
 #### 14. ####
 #Suppose you have a data frame where one column gives the month (in numeric format), 
