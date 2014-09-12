@@ -184,36 +184,24 @@ twovectors(i,j)
 # error when not same length: Error in twovectors(i, j) : vectors are not the same length
 
 
-#### 13. [incomplete] ####
+#### 13. ####
 #Write a function that takes a character vector and returns the substring of three 
 #characters that begins with the first vowel in the string. Have the function handle 
 #gracefully substrings where this isn't possible.
-k<-as.character(c("apple","orange","grape","plum"))
-vowels<-as.character(c("a","e","i","o","u"))
+k<-c("apple","orange","grape","plum")
+v<-c("a","e","i","o","u")
+k
+v
 threechar<-function(k)
-{ 
-  k[1]
-  a=regexpr("a",k[1])
-  e=regexpr("e",k[1])
-  i=max(0,regexpr("i",k[1]))
-  o=max(0,regexpr("o",k[1]))
-  u=max(0,regexpr("u",k[1]))
-  
-  startk=nchar(k)
-  startk
-  a=regexpr("a",k)
-  e=regexpr("e",k)
-  i=regexpr("i",k)
-  o=regexpr("o",k)
-  u=regexpr("u",k)
-  a
-  e
-  i
-  o
-  u
-  substr(k,startk)
-   
+{  
+    k %in% v
+#as a test I did this also:
+    "apple" %in% "a"
+#this shows all false when run, even though clearly there is an "a" in "apple", when run for numerical vectors in question 3 it works fine.
+#example: which(small0 %in% big0). Is there a different syntax for character vectors?
+
 }
+
 
 
 #### 14. ####
