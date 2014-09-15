@@ -1,0 +1,105 @@
+#### Stacey Schwarcz ####
+#Programming Entropy and Information Gain
+
+#For this project, you will be creating a collection of functions that analyze categorical data using the concepts of 
+#entropy and information gain.
+#The attached .CSV file will provide you with some data to test your function. The functions described in the attached 
+#.PDF should be coded, tested, and placed in a single R script. #Place your R script in a public repository on github 
+#and submit a link to the script here. 
+#Entropy Project is due end of day on Tuesday September 16th.
+
+
+#### 1.#### 
+#   Create a function entropy() that takes a vector d as input and returns a single numeric value that is the 
+#   entropy E(d) of the vector:E(d)=- SUM(i=1 to k) of (p(sub i)*log(base 2)*pi)
+#   Note that your function should accept as input a vector with data type factor, character, or numeric, 
+#   even though the data will be treated as categorical data. Call this function
+
+entropy<-function(d)
+{
+  n<-length(d)
+  t<-table(d)
+  p<-t/n
+  f<-p*log2(p)
+  f[is.na(f)] <-0
+  E<--sum(f)
+  E
+}
+
+
+#### 2. ####
+#   Create a function infogain() that takes two vectors - the target d and the attribute a with which to partition 
+#   the data - and returns the information gain I(d,a) for the attribute:  
+#   I(d,a) = E(d) - SUM(j=1 to m) of (n(sub j)/n)*E(d(sub j)
+#   where n is the length of the target d, n(sub j) is the size of the partition of d according to the jth value 
+#   of the attribute a, and E(dj) is the entropy of the partition of d according to the jth value of the attribute a.
+
+infogain<-function(d,a)
+{
+n<-length(d)
+df<-data.frame(d,a)
+dsplit<-split(df,df$d)
+asplit<-split(df,list(df$d,df$a))
+#hd<-lapply(dsplit,head) #view dsplit
+#ha<-lapply(asplit,head) #view asplit
+nj<-sapply(dsplit,nrow)
+ni<-sapply(asplit,nrow)
+pj<-ni/nj
+njn<-nj/n
+Edj<--(pj*log2(pj))
+Edj[is.na(Edj)] <-0
+njn.Edj=njn*Edj
+sumj=sum(njn.Edj)
+E.d=entropy(d)
+L=E.d-sumj
+#list(n,hd,ha,nj,ni,pj,njn,Edj,njn.Edj,sumj,E.d,L)  #to test interim outputs
+L
+}
+
+#test infogain
+infogain(dataset$answer,dataset$attr1) 
+#[1] 2.411565e-05 
+infogain(dataset$answer,dataset$attr2) 
+#[1] 0.2599038e-01
+infogain(dataset$answer,dataset$attr3) 
+#[1] 0.002432707e-03 
+
+#### 3.####
+#   Create a function decide() that takes a data frame - the target d and the collection of candidate attributes 
+#   a(sub i) with which to partition the data - and the number of the column that is the target and returns a list 
+#   containing two items: the identity (by column number) of the attribute that maximizes the information gain and 
+#   a vector of the information gains for each of the candidate attributes.
+
+decide<-function(DF,c)
+  {
+  gains<-numeric()
+  for (i in 1:(c-1)){
+    a<-DF[[i]]
+    d<-DF[[c]]
+    e<-infogain(a,d)
+    gains<-c(gains,e)
+  }
+  max<-match(max(gains),gains)
+  list(max=max,gains=gains)
+}
+
+
+#Store your three functions in an R script called entropyfunctions.R. Your submission here should consist of a single link to the file in your github repository.
+#A sample dataset (entropy-sample.csv) has been provided. The functions you create should be able to produce the following results when run against this dataset: 
+#dataset<-read.csv("c:/Users/trans_000/Documents/GitHub/IS607/IS607/entropy-test-file.csv") #desktop
+dataset<-read.csv("c:/IS 607/entropy-test-file.csv") #alternate computer
+entropy(dataset$answer) 
+#[1] 0.9832692 
+infogain(dataset$answer,dataset$attr1) 
+#[1] 2.411565e-05 
+infogain(dataset$answer,dataset$attr2) 
+#[1] 0.2599038e-01
+infogain(dataset$answer,dataset$attr3) 
+#[1] 0.002432707e-03 
+decide(dataset,4) 
+#$max 
+#[1] 2 
+#$gains 
+#attr1 attr2 attr3 
+#2.411565e-05 2.599038e-01 2.432707e-03
+                                                  
