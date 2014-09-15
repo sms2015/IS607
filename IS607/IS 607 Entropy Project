@@ -68,7 +68,7 @@ decide<-function(DF,c)
   for (i in 1:(c-1)){
     a<-DF[[i]]
     d<-DF[[c]]
-    e<-infogain(a,d)
+    e<-infogain(d,a)
     gains<-c(gains,e)
   }
   max<-match(max(gains),gains)
