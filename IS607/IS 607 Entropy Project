@@ -56,14 +56,6 @@ L=E.d-sumj
 L
 }
 
-#test infogain
-infogain(dataset$answer,dataset$attr1) 
-#[1] 2.411565e-05 
-infogain(dataset$answer,dataset$attr2) 
-#[1] 0.2599038e-01
-infogain(dataset$answer,dataset$attr3) 
-#[1] 0.002432707e-03 
-
 #### 3.####
 #   Create a function decide() that takes a data frame - the target d and the collection of candidate attributes 
 #   a(sub i) with which to partition the data - and the number of the column that is the target and returns a list 
