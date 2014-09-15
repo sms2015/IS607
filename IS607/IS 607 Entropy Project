@@ -48,10 +48,10 @@ pj<-ni/nj
 njn<-nj/n
 Edj<--(pj*log2(pj))
 Edj[is.na(Edj)] <-0
-njn.Edj=njn*Edj
-sumj=sum(njn.Edj)
-E.d=entropy(d)
-L=E.d-sumj
+njn.Edj<-njn*Edj
+sumj<-sum(njn.Edj)
+E.d<-entropy(d)
+L<-E.d-sumj
 #list(n,hd,ha,nj,ni,pj,njn,Edj,njn.Edj,sumj,E.d,L)  #to test interim outputs
 L
 }
