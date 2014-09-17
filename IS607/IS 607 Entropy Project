@@ -24,8 +24,9 @@ entropy<-function(d)
   f[is.na(f)] <-0
   E<--sum(f)
   E
+  #list(n,t,p,f,E) #test interim outputs
 }
-
+#output for test functions checks out
 
 #### 2. ####
 #   Create a function infogain() that takes two vectors - the target d and the attribute a with which to partition 
@@ -36,25 +37,25 @@ entropy<-function(d)
 
 infogain<-function(d,a)
 {
-n<-length(d)
-df<-data.frame(d,a)
-dsplit<-split(df,df$d)
-asplit<-split(df,list(df$d,df$a))
-#hd<-lapply(dsplit,head) #view dsplit
-#ha<-lapply(asplit,head) #view asplit
-nj<-sapply(dsplit,nrow)
-ni<-sapply(asplit,nrow)
-pj<-ni/nj
-njn<-nj/n
-Edj<--(pj*log2(pj))
-Edj[is.na(Edj)] <-0
-njn.Edj<-njn*Edj
-sumj<-sum(njn.Edj)
-E.d<-entropy(d)
-L<-E.d-sumj
-#list(n,hd,ha,nj,ni,pj,njn,Edj,njn.Edj,sumj,E.d,L)  #to test interim outputs
-L
+  n<-length(d)
+  df<-data.frame(d,a)
+  asplit<-split(df,df$a)
+  dsplit<-split(df,list(df$a,df$d))
+  #ha<-lapply(asplit,head) #view dsplit
+  #hd<-lapply(hsplit,head) #view asplit
+  nj<-sapply(asplit,nrow)
+  ni<-sapply(dsplit,nrow)
+  p1<-ni/n
+  p2<-ni/nj
+  fj<-p1*log2(p2)
+  fj[is.na(fj)] <-0
+  Edj<--sum(fj)
+  E.d<-entropy(d)
+  L<-E.d-Edj
+  #list("n"=n,"nj"=nj,"ni"=ni,"p1"=p1,"p2"=p2,"fj"=fj,"Edj"=Edj,"E.d"=E.d,"L"=L)  #to test interim outputs
+  L
 }
+#output for test functions check out
 
 #### 3.####
 #   Create a function decide() that takes a data frame - the target d and the collection of candidate attributes 
@@ -63,7 +64,7 @@ L
 #   a vector of the information gains for each of the candidate attributes.
 
 decide<-function(DF,c)
-  {
+{
   gains<-numeric()
   for (i in 1:(c-1)){
     a<-DF[[i]]
@@ -74,24 +75,25 @@ decide<-function(DF,c)
   max<-match(max(gains),gains)
   list(max=max,gains=gains)
 }
+#output for test functions check out.
 
+#Store your three functions in an R script called entropyfunctions.R. Your submission here should consist 
+#of a single link to the file in your github repository.#A sample dataset (entropy-sample.csv) has been 
+#provided. The functions you create should be able to produce the following results when run against this dataset: 
 
-#Store your three functions in an R script called entropyfunctions.R. Your submission here should consist of a single link to the file in your github repository.
-#A sample dataset (entropy-sample.csv) has been provided. The functions you create should be able to produce the following results when run against this dataset: 
-#dataset<-read.csv("c:/Users/trans_000/Documents/GitHub/IS607/IS607/entropy-test-file.csv") #desktop
-dataset<-read.csv("c:/IS 607/entropy-test-file.csv") #alternate computer
+dataset<-read.csv("c:/Users/trans_000/Documents/GitHub/IS607/IS607/entropy-test-file.csv") #desktop
+#dataset<-read.csv("c:/IS 607/entropy-test-file.csv") #alternate computer
 entropy(dataset$answer) 
 #[1] 0.9832692 
 infogain(dataset$answer,dataset$attr1) 
 #[1] 2.411565e-05 
 infogain(dataset$answer,dataset$attr2) 
-#[1] 0.2599038e-01
+#[1] 0.2599038
 infogain(dataset$answer,dataset$attr3) 
-#[1] 0.002432707e-03 
+#[1] 0.002432707 
 decide(dataset,4) 
 #$max 
 #[1] 2 
 #$gains 
 #attr1 attr2 attr3 
 #2.411565e-05 2.599038e-01 2.432707e-03
-                                                  
