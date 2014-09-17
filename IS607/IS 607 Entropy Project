@@ -42,7 +42,7 @@ infogain<-function(d,a)
   asplit<-split(df,df$a)
   dsplit<-split(df,list(df$a,df$d))
   #ha<-lapply(asplit,head) #view dsplit
-  #hd<-lapply(hsplit,head) #view asplit
+  #hd<-lapply(dsplit,head) #view asplit
   nj<-sapply(asplit,nrow)
   ni<-sapply(dsplit,nrow)
   p1<-ni/n
