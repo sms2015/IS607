@@ -9,8 +9,7 @@
 #Download the Movies dataset from http://had.co.nz/data/movies/.
 #Provide R code that supports your work/conclusions for each of the following:
 
-#m <- read.table("C:/Users/trans_000/Documents/GitHub/IS607/IS607/movies.tab", sep="\t", header=TRUE, quote="", comment="")
-m<-read.table("$Comedymovies.tab", sep="\t", header=TRUE, quote="", comment="")
+m <- read.table("C:/Users/trans_000/Documents/GitHub/IS607/IS607/movies.tab", sep="\t", header=TRUE, quote="", comment="")
 
 #### 1. ####
 #Show an appropriate visualization that displays the total number of movies for each decade.
