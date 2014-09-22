@@ -1,0 +1,104 @@
+---
+title: "IS 607 Assignment 4"
+author: "Adam Stopek and Stacey Schwarcz"
+date: "Sunday, September 21, 2014"
+output: html_document
+---
+This assignment is based on the Movies dataset from http://had.co.nz/data/movies/. 
+
+To answer the question, "Which year were the best popular movies made?", we have interpreted best to mean 
+the highest rating and most popular has been interpreted to mean the most number of votes. 
+
+The algorithm used to compare "best popular" movies between years was: First we created a subset of movies: a data frame with Year, Rating, and Number of Votes.We then ranked each movie from 1 to 58,788 (the number of observations in the data) based on the number of votes to get the popularity ranking.  We did the same for rating to get the rating ranking.
+The next step was to create a weighted average score from these rankings for each movie.Finally we took the average of these scores for each year and calculated the number of movies for each year.We then plotted these statistics on line graphs.
+
+The following table shows the first few rows of the table we created using this algorithm: 
+
+```{r, echo=FALSE}
+movies<- read.table("C:/Users/trans_000/Documents/GitHub/IS607/IS607/movies.tab", sep="\t", header=TRUE, quote="", comment="")
+data <- subset(movies, select=c("year","rating","votes"))
+data$rank_rating <-c(rank(data$rating, ties.method = "random" ))
+data$rank_votes <-c(rank(data$votes, ties.method = "random" ))
+data$weighted_score <- (data$rank_rating+data$rank_votes)/2
+
+data$count <- 1
+year_score <- subset(data, select=c("year","weighted_score"))
+year_count <- subset(data, select=c("year","count"))
+head(data)
+
+yearly_avg_score <- aggregate(year_score$weighted_score, by=list(year_score$year), FUN=mean, na.rm=TRUE)
+yearly_num_movies <- aggregate(year_count$count, by=list(year_count$year), FUN=sum, na.rm=TRUE)
+names(yearly_avg_score)<- c("year","average_score")
+names(yearly_num_movies)<- c("year","amount_of_movies")
+
+###plyr usage of Join
+#install.packages("plyr")
+library(plyr)
+joined_data <- join(yearly_avg_score, yearly_num_movies, by = "year", type = "inner", match = "all")
+
+```
+
+```{r}
+
+
+```
+
+The following line graphs show the total number of movies by year and the weighted score by year:
+
+```{r, echo=FALSE}
+library(ggplot2)
+score_plot <- ggplot(data=joined_data, aes(x=year, y=average_score)) + geom_line(size=1.5) + geom_point() 
+number_of_movies_plot <- ggplot(data=joined_data, aes(x=year, y=amount_of_movies)) + geom_line(size=1.5) + geom_point()
+
+#Graph of number of movies
+number_of_movies_plot
+
+#Graph of score
+score_plot
+
+```
+
+
+The year with the greatest number of popular, best movies, considering all years:
+
+
+```{r, echo=FALSE}
+#Year with the greatest number of popular, best movies, considering all years:
+max_score<-max(joined_data$average_score)
+row_max=which(joined_data$average_score==max_score)
+max_year=joined_data$year[row_max]
+max_year
+
+```
+We noticed that the chart shows much higher average ratings for years with fewer than 200 movies, essentially before 1930. We also noticed that not surprisingly there were far fewer movies during this time period, or at least there were fewer movies recorded and rated for these years in the database.
+
+We believe this may be due to people being more easily impressed by movies in earlier years since there were fewer movies and movies were a newer concept. It is more difficult to truly impress movie goers now as they may feel that they've seen it all before. Therefore we looked at a subset of the data for years with greater than 200 movies, essentially 1930 and after.
+
+The following line graphs show the total number of movies by year and the weighted score by year for the years with greater than 200 movies:
+
+```{r, echo=FALSE}
+#Years with greater than 200 movies
+joined_data_200<-joined_data[which(joined_data$amount_of_movies>=200),]
+score_plot_200<-ggplot(joined_data_200, aes(x=year,y=average_score))+geom_line(size=1.5)
+num_movies_plot_200<-ggplot(joined_data_200, aes(x=year,y=amount_of_movies))+geom_line(size=1.5)
+
+#Graph of number of movies where number of movies is greater than 200
+num_movies_plot_200
+
+#Graph of score for years where number of movies is greater than 200
+score_plot_200
+
+```
+
+
+The year with the greatest number of popular, best movies, considering years with greater than 200 movies:
+
+
+```{r, echo=FALSE}
+#Year with greatest number of popular, best movies with greater than 200 movies (beginning 1930):
+max_score_200<-max(joined_data_200$average_score)
+row_max_200=which(joined_data_200$average_score==max_score_200)
+max_year_200=joined_data_200$year[row_max_200]
+max_year_200
+
+```
