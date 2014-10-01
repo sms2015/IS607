@@ -1,0 +1,297 @@
+---
+title: 'Project 2: Profiling a Data Set 
+        Storm Events 2013 NOAA Data Set'
+author: "Stacey Schwarcz"
+date: "Tuesday, September 23, 2014"
+output: pdf_document
+---
+
+ABSTRACT: This data profile provides a survey of Weather Related Events for 2013 based on an NOAA Database.  In 2013 the most common event type was Thunderstorm Wind, comprising 23.9% of all recorded events. The month with the most recorded events was June with 14.7% of all events. The State with the highest percentage of events is Texas with 8.80% of all events.  With respect to event type, Excessive heat resulted in the highest number of direct injuries (856), Ice Storms caused the most indirect injuries (475), Flash Floods caused the most direct fatalities(60), and Winter Weather caused the most indirect fatalities (48).  
+
+DATA SET DESCRIPTION  
+Data Set Characteristics:  Multivariate  
+Number of Observations: 59908  
+Area: Science/Weather  
+Number of Attributes: 51  
+Last Modified: 2014-08-24  
+Missing Values? Yes  
+
+
+DATA SOURCE  
+http://www1.ncdc.noaa.gov/pub/data/swdi/stormevents/csvfiles/  
+NOAA Satellite and Information Service  
+National Environmental Satellite, Data, and Information Service (NESDIS)  
+National Climactic Data Center(NCDC), U.S, Department of Commerce  
+  
+
+DATA SET INFORMATION  
+http://www.ncdc.noaa.gov/oa/climate/sd/sdfaq.html  
+NCDC receives Storm Data from the National Weather Service. The National Weather service receives their information from a variety of sources, which include but are not limited to: county, state and federal emergency management officials, local law enforcement officials, skywarn spotters, NWS damage surveys, newspaper clipping services, the insurance industry and the general public.  
+  
+
+VARIABLE INFORMATION  
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+options(stringsAsFactors = FALSE)
+storm_events_2013<-read.csv("C:/IS607/StormEvents_details-ftp_v1.0_d2013_c20140824.csv.gz")
+#storm_events_2013<-read.csv("C:/IS 607/project 2/StormEvents_details-ftp_v1.0_d2013_c20140824.csv.gz")
+type_var<-sapply(storm_events_2013, class) 
+var_define<-data.frame(type_var)
+colnames(var_define)<-c("Variable Type")
+var_define
+var_define$var_detail<-ifelse(var_define=="integer"|var_define=="numeric","continuous","character")
+```
+
+EVENT TYPE LIST
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+a=paste(as.character(unique(storm_events_2013$EVENT_TYPE)),collapse=",")
+strwrap(a, width = 0.9 * getOption("width"))
+
+storm_events_2013$nMonth=match(storm_events_2013$MONTH_NAME,month.name)
+library(plyr)
+library(dplyr)
+
+```
+
+THE REAMAINDER OF THIS PROFILE EVALUATES A SUBSET OF THE DATA USING THE FOLLOWING KEY FIELDS:
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+df_2013<-tbl_df(storm_events_2013)
+df_2013<-tbl_df(storm_events_2013)
+sub_df_2013<-select(df_2013,STATE,YEAR,MONTH_NAME,nMonth,EVENT_TYPE,INJURIES_DIRECT:DAMAGE_CROPS,MAGNITUDE,MAGNITUDE_TYPE,FLOOD_CAUSE,TOR_F_SCALE:TOR_WIDTH)
+sub_colname<-colnames(sub_df_2013)
+sub_colname
+```
+EVENT FREQUENCY FOR 2013
+
+Event Type and Frequency Table
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+sub_df_2013$count<-1
+month_state_event_count <- subset(sub_df_2013, select=c("MONTH_NAME","nMonth","STATE","EVENT_TYPE","count"))
+event.count <- aggregate(month_state_event_count$count, by=list(month_state_event_count$EVENT_TYPE), FUN=sum, na.rm=TRUE)
+colnames(event.count)<-c('EVENT_TYPE','No.OBSERVATIONS')
+event.count.order<-arrange(event.count,desc(No.OBSERVATIONS))
+total<-sum(event.count.order$No.OBSERVATIONS)
+
+options (digits=4)
+options(scipen=999)
+
+library('scales')
+n_event<-nrow(event.count.order)
+event.count.order<-mutate(event.count.order,Percent = No.OBSERVATIONS/total)
+
+event.count.order.percent<-data.frame('EVENT_TYPE'=event.count.order$EVENT_TYPE,'Observations'=event.count.order$No.OBSERVATIONS,'Percent'=percent(event.count.order$Percent))
+
+event.count.order.percent
+
+```
+Event Type with the Highest Frequency:  
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+max_event<-max(event.count.order$No.OBSERVATIONS)
+row_max=which(event.count.order$No.OBSERVATIONS==max_event)
+max_event_type=event.count.order$EVENT_TYPE[row_max]
+max_event_type
+
+```
+'Top Events for 2013 (At least 5% of total event records)'
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+event.count.top<-filter(event.count.order,Percent>=.05)
+event.count.top$EVENT_TYPE<-as.factor(event.count.top$EVENT_TYPE)
+
+library(ggplot2)
+
+p_event<-ggplot(data=event.count.top,aes(x=EVENT_TYPE, y=Percent))+geom_bar(stat="identity")+ ggtitle("Top Events for 2013 (as a % of total events")
+
+p_event
+```
+EVENTS BY MONTH
+
+The Month with the Most Recorded Events:
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+month.count<-aggregate(month_state_event_count$count, by=list(month_state_event_count$nMonth,month_state_event_count$MONTH_NAME), FUN=sum, na.rm=TRUE)
+colnames(month.count)<-c('nMonth','Month',"No.OBSERVATIONS")
+month.count.order<-arrange(month.count,nMonth)
+month.count.order<-mutate(month.count.order,Percent = No.OBSERVATIONS/total)
+month_plot <- ggplot(data=month.count.order, aes(x=nMonth, y=Percent)) + geom_line(size=1.5) + geom_point()+ggtitle("Events by Month")
+
+month.count.order.percent<-data.frame('Month'=month.count.order$Month,'Observations'=month.count.order$No.OBSERVATIONS,'Percent'=percent(month.count.order$Percent))
+
+max_month<-max(month.count.order$No.OBSERVATIONS)
+row_max2=which(month.count.order$No.OBSERVATIONS==max_month)
+max_month2=month.count.order$Month[row_max2]
+max_month2
+
+```
+Table of Events by Month
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+month.count.order.percent
+```
+
+Chart of Events by Month  
+  
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+month_plot
+```
+  
+  
+EVENTS BY STATE  
+
+State with the Highest Frequency of Events
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+state.count<-aggregate(month_state_event_count$count, by=list(month_state_event_count$STATE), FUN=sum, na.rm=TRUE)
+colnames(state.count)<-c('State','No.OBSERVATIONS')
+state.count.order<-arrange(state.count,desc(No.OBSERVATIONS))
+
+state.count.order<-mutate(state.count.order,Percent = No.OBSERVATIONS/total)
+
+state.count.order.percent<-data.frame('State'=state.count.order$State,'Observations'=state.count.order$No.OBSERVATIONS,'Percent'=percent(state.count.order$Percent))
+
+max_state<-max(state.count.order$No.OBSERVATIONS)
+row_max3=which(state.count.order$No.OBSERVATIONS==max_state)
+max_state_type=state.count.order$State[row_max3]
+max_state_type
+```
+Table of Events by State
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+state.count.order.percent
+```
+
+Top 5 States by Frequency of Events 
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+state.count.top<-filter(state.count.order,No.OBSERVATIONS>2000)
+state.count.top$State<-as.factor(state.count.top$State)
+
+p_state<-ggplot(data=state.count.top,aes(x=State, y=Percent))+geom_bar(stat="identity")+ ggtitle("2013 Top Five States for Weather Related Events (% of total events)")
+p_state
+```
+
+Top State by Frequency for Each Event Type
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+event.state.count <- aggregate(month_state_event_count$count, by=list(month_state_event_count$EVENT_TYPE,month_state_event_count$STATE), FUN=sum, na.rm=TRUE)
+colnames(event.state.count)<-c('EVENT_TYPE','State','Frequency')
+#Event Type Frequency Table
+
+#Percenct of total observations
+event.state.count<-mutate(event.state.count,Percent_Tot= Frequency/total)
+max.state.event <- aggregate(event.state.count$Frequency, by=list(event.state.count$EVENT_TYPE), FUN=max, na.rm=TRUE)
+colnames(max.state.event)<-c('EVENT_TYPE','Frequency')
+
+max.state.join <- join(max.state.event, event.state.count, by = c("EVENT_TYPE","Frequency"), type = "left", match = "first")
+max.state.join2 <-join(max.state.join, event.count.order, by = c("EVENT_TYPE"), type = "left", match = "first")
+max.state.join2$Percent_Tot<-percent(max.state.join2$Percent_Tot)
+
+max.state.join2$Percent<-percent(max.state.join2$Percent)
+
+colnames(max.state.join2)<-c('EVENT_TYPE','State_Freq','Top_State','Pct_of_Total','Event_Freq','Event_Pct')
+
+max.state.join3<-max.state.join2[c(1,5,6,3,2,4)]
+max.state.join3<-mutate(max.state.join3,Pct_of_Event = percent(State_Freq/Event_Freq))
+
+event.month.count <- aggregate(month_state_event_count$count, by=list(month_state_event_count$EVENT_TYPE,month_state_event_count$nMonth), FUN=sum, na.rm=TRUE)
+
+colnames(event.month.count)<-c('EVENT_TYPE','Month','Month_Freq')
+
+event.month.count<-mutate(event.month.count,Month_Pct_Tot= Month_Freq/total)
+max.month.event <- aggregate(event.month.count$Month_Freq, by=list(event.month.count$EVENT_TYPE), FUN=max, na.rm=TRUE)
+
+colnames(max.month.event)<-c('EVENT_TYPE','Month_Freq')
+
+```
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+max.month.join <- join(max.month.event, event.month.count, by = c("EVENT_TYPE","Month_Freq"), type = "left", match = "first")
+
+max.month.join$Month_Pct_Tot<-percent(max.month.join$Month_Pct_Tot)
+
+max.state.month.join<-join(max.state.join3, max.month.join, by = c("EVENT_TYPE"), type = "inner", match = "first")
+max.state.month.join2<-mutate(max.state.month.join,Month_Pct_of_Event= Month_Freq/Event_Freq)
+
+storm_events_2013$nMonth=match(storm_events_2013$MONTH_NAME,month.name)
+months_df<-data.frame(storm_events_2013$MONTH_NAME,storm_events_2013$nMonth)
+month_df=unique(months_df)
+colnames(month_df)=c('Month2','Month')
+
+max.state.month.join3<-join(max.state.month.join2,month_df,by = c("Month"), type = "left", match = "first")
+max.state.month.join4<-max.state.month.join3[c(2:8,1,12,9:11)]
+```
+
+EVENT TYPE WITH TOP STATE BY FREQUENCY
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+max.state.month.state<-max.state.month.join4[1:7]
+max.state.month.state
+```
+
+EVENT TYPE WITH TOP MONTH BY FREQUENCY
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+max.state.month.month<-max.state.month.join4[c(1:3,8:12)]
+max.state.month.month
+```
+INJURIES AND FATALITIES
+
+Table of injuries and fatalities by Event Type
+
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+#sum stats for the year in terms of injuries and fatalities
+impacts.count<-aggregate(month_state_event_count$count, by=list(month_state_event_count$MONTH), FUN=sum, na.rm=TRUE)
+impacts.col<-sub_df_2013[c(5:9)]
+impacts.count.2<-aggregate(impacts.col[2], by=list(impacts.col$EVENT_TYPE), FUN=sum, na.rm=TRUE)
+impacts.count.3<-aggregate(impacts.col[3], by=list(impacts.col$EVENT_TYPE), FUN=sum, na.rm=TRUE)
+impacts.count.4<-aggregate(impacts.col[4], by=list(impacts.col$EVENT_TYPE), FUN=sum, na.rm=TRUE)
+impacts.count.5<-aggregate(impacts.col[5], by=list(impacts.col$EVENT_TYPE), FUN=sum, na.rm=TRUE)
+merge1<-merge(impacts.count.2,impacts.count.3,by.x='Group.1')
+merge2<-merge(impacts.count.4,impacts.count.5,by.x='Group.1')
+merge.all<-merge(merge1,merge2,by.x='Group.1')
+colnames(merge.all)<-c('Event_Type','INJURIES_DIRECT', 'INJURIES_INDIRECT', 'DEATHS_DIRECT', 'DEATHS_INDIRECT')
+merge.all
+```
+  
+Total Injuries and Fatalities 2013
+  
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+colSums(merge.all[2:5])
+```
+
+Table of Injuries and Fatalities by Event Type
+  
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+merge.all
+```
+
+2013 Event Type with the most direct injuries
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+max_inj_dir<-max(merge.all[2])
+row_max4=which(merge.all[2]==max_inj_dir)
+max_inj_dir=merge.all$Event_Type[row_max4]
+max_inj_dir
+```
+
+2013 Event Type with the most indirect injuries
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+max_inj_indir<-max(merge.all[3])
+row_max5=which(merge.all[3]==max_inj_indir)
+max_inj_indir=merge.all$Event_Type[row_max5]
+max_inj_indir
+```
+2013 Event Type with the most direct fatalities
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+max_fat_dir<-max(merge.all[4])
+row_max6=which(merge.all[4]==max_fat_dir)
+max_fat_dir=merge.all$Event_Type[row_max6]
+max_fat_dir
+```
+
+2013 Event Type with most indirect fatalities
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
+max_fat_indir<-max(merge.all[5])
+row_max7=which(merge.all[5]==max_fat_indir)
+max_fat_indir=merge.all$Event_Type[row_max7]
+max_fat_indir
+```
