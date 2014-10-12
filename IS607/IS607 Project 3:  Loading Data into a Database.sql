@@ -1,10 +1,11 @@
 --This creates the database 'project3'
 CREATE DATABASE project3;
 
+--Project Instructions
 --Show the structure of the table(s) that you created. 
 --(A single table is acceptable; you’ll need to create the database and table(s)).
 
---This is the table structure, I created only one table WikiData.
+--This is the table structure. I created only one table WikiData.
 CREATE TABLE WikiData (
   date_time TIMESTAMP,  --see note below on this column
   projectcode VARCHAR(50),
