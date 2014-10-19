@@ -42,3 +42,11 @@ CREATE VIEW top5views AS
 	FROM WikiData
 	ORDER BY pageviews DESC
 	LIMIT 5;
+
+--result of top5views query
+--projectcode,pagename,pageviews,bytes
+--"2014-10-12 17:03:13.492";"en";"Database";257;14268896
+--"2014-10-12 17:03:13.492";"en";"Data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAuCAIAAABmjeQ9AAAARElEQVR42mVO2wrAUAhy/f8fz%2BniVMTYQ3hLKkgGgN/IPvgIhUYYV/qogdP75J01V%2BJwrKZr/5YPcnzN3e6t7l%2B2K%2BEFX91B1daOi7sAAAAASUVORK5CYII%3D";220;1729420
+--"2014-10-12 17:03:13.492";"en";"Data";203;8573050
+--"2014-10-12 17:03:13.492";"en";"Data_mining";196;15613111
+--"2014-10-12 17:03:13.492";"en";"Data_Protection_Act_1998";174;3733159
