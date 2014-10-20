@@ -134,7 +134,7 @@ CREATE VIEW allPosts AS
 	;
 	
 --Result
---postId,Title,postDate,firstName,lastName,inTag,commentDate,commentName,commentText
+--postId,title,firstName,lastName,postDate,inTag,commentDate,commentName,commentText
 --1;"Coding Towards Vietnam: edX in Translation";"JOE";"MCGONEGAL";"2014-09-29";"Classroom";"2014-10-01";"Minh Tue Vo";":) I would like to credit Mr. Nguyen Hoang An (a fellow coordinator of Vietnamese edX translation project and a passionate translator as well), Mr. Nguyen Cong Nam and other translators who have volunteered so much of their times to make the translation available online."
 --1;"Coding Towards Vietnam: edX in Translation";"JOE";"MCGONEGAL";"2014-09-29";"Engineering";"2014-10-01";"Minh Tue Vo";":) I would like to credit Mr. Nguyen Hoang An (a fellow coordinator of Vietnamese edX translation project and a passionate translator as well), Mr. Nguyen Cong Nam and other translators who have volunteered so much of their times to make the translation available online."
 --3;"Are You 3D-Printing with Fair-Trade Filament?";"JOE";"MCGONEGAL";"2014-08-06";"Design";"2014-08-15";"Balıkesir Haber";"For Video thanks."
