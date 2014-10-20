@@ -32,7 +32,7 @@
 
 CREATE TABLE Posts (
 	postId SERIAL,
-	Title VARCHAR(255) NOT NULL,
+	title VARCHAR(255) NOT NULL,
 	firstName VARCHAR(50) NOT NULL,
 	lastName VARCHAR(50) NOT NULL,	
 	postDate DATE NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE postComments (
 --Deliverable: a single script with all of the insert statements.
 
 
-INSERT INTO Posts (Title,firstName,lastName,postDate)
+INSERT INTO Posts (title,firstName,lastName,postDate)
 VALUES
     ('Coding Towards Vietnam: edX in Translation','JOE', 'MCGONEGAL','2014-09-29'),
     ('Swords Into Plowshares: Reworking a Military Computer in 1972','NANCY', 'DUVERGNE SMITH','2014-09-22'),
