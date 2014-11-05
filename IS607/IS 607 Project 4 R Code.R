@@ -13,8 +13,9 @@ names(broadband)<-c("GNIS.ID","Municipality.Name","Municipality.Type",
 
 class(broadband)  #data.frame
 
-#a- what are the top 5 counties for cable and for DSL broadband availability using total cable availability
-#divided by total census households, and secondary sort value of total cable availability.
+#a- what are the top 10 and bottom 10 counties for cable and DSL broadband availability using total cable availability
+#divided by total census households, and secondary sort value of total cable availability, then doing the same for DSL
+#availability.
 
 #create a data frame with region, county, housing units, cable units, and DSL units.
 b.region.county <- subset(broadband, select=c("Region","County","Muni.Units","No.Units.Cable","No.Units.DSL"))
