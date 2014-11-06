@@ -14,8 +14,7 @@ names(broadband)<-c("GNIS.ID","Municipality.Name","Municipality.Type",
 class(broadband)  #data.frame
 
 #a- what are the top 10 and bottom 10 counties for cable and DSL broadband availability using total cable availability
-#divided by total census households, and secondary sort value of total cable availability, then doing the same for DSL
-#availability.
+#divided by total census households then doing the same for DSL availability.
 
 #create a data frame with region, county, housing units, cable units, and DSL units.
 b.region.county <- subset(broadband, select=c("Region","County","Muni.Units","No.Units.Cable","No.Units.DSL"))
@@ -26,7 +25,7 @@ b.county.sum<- setNames(aggregate(cbind(b.region.county$Muni.Units,b.region.coun
 #find the household cable percentages by county
 b.county.sum$Cable.Unit.pct<-b.county.sum$Cable.Units/b.county.sum$HSE.Units
 #sort by percent cable and then by cable units
-sort.county.Cable<-b.county.sum[order(-b.county.sum$Cable.Unit.pct,-b.county.sum$Cable.Units),]
+sort.county.Cable<-b.county.sum[order(-b.county.sum$Cable.Unit.pct),]
 top10.Cable<-sort.county.Cable[1:10,c(1,2,3,5)]
 n=nrow(sort.county.Cable)
 m<-n-10+1
@@ -34,7 +33,7 @@ bottom10.Cable<-sort.county.Cable[m:n,c(1,2,3,5)]
 
 #find percentages and sort for DSL units
 b.county.sum$DSL.Unit.pct<-b.county.sum$DSL.Units/b.county.sum$HSE.Units
-sort.county.DSL<-b.county.sum[order(-b.county.sum$DSL.Unit.pct,-b.county.sum$Cable.Units),]
+sort.county.DSL<-b.county.sum[order(-b.county.sum$DSL.Unit.pct),]
 top10.DSL<-sort.county.DSL[1:10,c(1,2,4,6)]
 bottom10.DSL<-sort.county.DSL[m:n,c(1,2,4,6)]
 
