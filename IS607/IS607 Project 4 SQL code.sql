@@ -60,11 +60,11 @@ ALTER TABLE Broadband ADD CONSTRAINT bbfk FOREIGN KEY (GNISID)
 --use inner join to create a new table with cable units and homes 
 CREATE TABLE CableDSL AS
 	SELECT
-		Broadband.GNISID GNISID,
-		Broadband.NoUnitsCable NoUnitsCable,
-		Broadband.NoUnitsDSL NoUnitsDSL,
-		CensusData.MuniUnits MuniUnits,
-		CensusData.County County	
+		Broadband.GNISID,
+		Broadband.NoUnitsCable,
+		Broadband.NoUnitsDSL,
+		CensusData.MuniUnits,
+		CensusData.County	
 	FROM
 		Broadband
 	INNER JOIN CensusData ON Broadband.GNISID = CensusData.itemId
@@ -94,10 +94,10 @@ CREATE TABLE DSLUnits AS
 --new joined table will be FinalDataSet
 
 --calculate CableUnits/MunicipalUnits and DSLUnits/MunicipalUnits	
---try this, help source: http://stackoverflow.com/questions/18966747/postgresql-multiplication-of-columns
+--help source: http://stackoverflow.com/questions/18966747/postgresql-multiplication-of-columns
 
---use the following in coordination with the calculated fields below to add columns to the dataset
-ALTER TABLE FinalDataSet ADD COLUMN address NUMERIC AS;
+--use the following code in coordination with the calculated fields below to add columns to the dataset
+ALTER TABLE FinalDataSet ADD COLUMN [....] NUMERIC;
 
 --
 SELECT SUM(NoUnitsCable / MuniUnits) AS PctCable 
@@ -105,6 +105,14 @@ FROM   FinalDataSet;
 
 SELECT SUM(NoUnitsDSL / MuniUnits) AS PctDSL
 FROM   FinalDataSet;
+
+--format of final data set
+--County VARCHAR(255),
+--MuniUnits INTEGER,
+--NoUnitsCable INTEGER,
+--NoUnitsDSL INTEGER,
+--pctCable NUMERIC,
+--pctDSL NUMERIC
 
 CREATE VIEW top10Cable AS
 	SELECT *
@@ -119,11 +127,3 @@ CREATE VIEW top10DSL AS
 	LIMIT 10;
 	
 --use OFFSET and LIMIT to return bottom 10
-
---format of final data set
---County VARCHAR(255),
---MuniUnits INTEGER,
---NoUnitsCable INTEGER,
---NoUnitsDSL INTEGER,
---pctCable NUMERIC,
---pctDSL NUMERIC
