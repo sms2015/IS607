@@ -33,7 +33,6 @@ BEGIN
 	(SELECT fullName 
 	FROM employees 
 	WHERE fullName LIKE fname);
- 
 END; 
 $$ LANGUAGE PLPGSQL;
 
@@ -48,6 +47,7 @@ SELECT DeptUpdate('David Thompson','IT') --function will insert this into the ne
 --4;"David Thompson";"IT"
 
 SELECT DeptUpdate('David Thompson','HR')
+
 --resulting table
 --1;"John Smith";"Accounting"
 --2;"Bob White";"Finance"
