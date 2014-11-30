@@ -1,0 +1,50 @@
+---
+title: "Assignment 13"
+author: "Stacey Schwarcz"
+date: "Sunday, November 30, 2014"
+output: html_document
+---
+
+Question 3 Instructions:
+Find an R package that covers the same functionality as some base R code. Write some code to benchmark probably with loaded or generated data of a reasonable size--to compare speed in the two environments). Publish your code and benchmark results at rpubs.com. 
+
+Example: Compare the speed of a dplyr aggregation function and the corresponding base R apply() function against a reasonably-sized dataset; if you want, you may instead compare the speed of two R packages that perform the same function.
+
+Import the Jeopardy questions data set
+source: http://j-archive.com/
+
+```{r}
+jeopardy<-read.csv("C:/temp/JEOPARDY_CSV.csv", header = TRUE, sep = ",")
+head(jeopardy)
+#convert data in Value column to numeric
+jeopardy$Value=as.character(jeopardy$Value)
+jeopardy$Value=sub(",","",jeopardy$Value)
+jeopardy$Value=sub("\\$","",jeopardy$Value)
+jeopardy$Value=as.numeric(jeopardy$Value)
+options(digits=0)
+
+```
+Find the average dollar value for questions by category. 
+
+Calculate using the base R aggregate function:
+```{r}
+agg<-setNames(aggregate(jeopardy$Value, list(category = jeopardy$Category), mean),c('Category','meanValue'))
+head(agg)
+```
+
+Do the same calculation with ddpy in the plyr package:
+```{r}
+library(plyr)
+dd<-ddply(jeopardy, .(Category), summarise, meanValue = mean (Value))
+head(dd)
+```
+Time to execute with aggregrate and then ddply:
+```{r}
+system.time(aggregate(jeopardy$Value, list(category = jeopardy$Category), mean))
+system.time(ddply(jeopardy, .(Category), summarise, meanValue = mean (Value)))
+
+```
+ddply take 3 times as long as aggregate for this calculation
+
+link to published file:
+http://rpubs.com/sms2015/45998
