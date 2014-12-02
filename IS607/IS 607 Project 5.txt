@@ -1,9 +1,9 @@
 --Stacey Schwarcz
 --IS 607 Project 5
 
---The dataset that I chose is the Jeopardy questions database which can be found here:
+--The data set that I chose is the Jeopardy questions database which can be found here:
 --source: http://j-archive.com/
---https://mega.co.nz/#!nVx0DQSR!OZvS2LPzNCOC-BejKoFp2wZEYakHO-EQUR1eL0plygM
+--URL  https://mega.co.nz/#!nVx0DQSR!OZvS2LPzNCOC-BejKoFp2wZEYakHO-EQUR1eL0plygM
 
 --I came across this dataset in a list of 100 interesting data sets and I thought it was interesting that Jeopardy
 --has such avid fans who would go to the trouble of collecting this data and making the data set publicly available, so
