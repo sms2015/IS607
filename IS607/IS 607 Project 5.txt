@@ -1,0 +1,77 @@
+--Stacey Schwarcz
+--IS 607 Project 5
+
+--The dataset that I chose is the Jeopardy questions database which can be found here:
+--source: http://j-archive.com/
+--https://mega.co.nz/#!nVx0DQSR!OZvS2LPzNCOC-BejKoFp2wZEYakHO-EQUR1eL0plygM
+
+--I came across this dataset in a list of 100 interesting data sets and I thought it was interesting that Jeopardy
+--has such avid fans who would go to the trouble of collecting this data and making the data set publicly available, so
+--I decided I wanted to use it for an assignment or project.
+
+--1. Load a dataset from R or PostgreSQL into Neo4j. 
+--see the R script file for the code used to create the csv files loaded below
+
+--Nodes:
+--Show (showNumber,airDate)
+--Clue (clueId,question,answer,value)
+
+--Relationships:
+--Round (roundName,categoryName)
+
+--2. Document your load process, in a way that is reproducible (so that I can test your work “soup to nuts” without 
+--needing to access your machine!)
+
+--All files loaded into Neo4J were generated from the original Jeopardy_CSV.csv file by running the R script
+
+--create "shows" nodes with load csv files (this file was created by running the R script file)
+load csv with headers from "file:C:/temp/shows.csv" 
+as shows
+create(s1:Show {showId:shows.showNumber,date: shows.airDate})
+
+--create "Clue" nodes with load csv files (This file was created by running the R script file)
+load csv with headers from "file:C:/temp/clues.csv" 
+as clues
+create(c1:Clue {clueId:clues.clueId,question:clues.question,answer:clues.answer,value:clues.value})
+
+--create Round(Jeopardy,Double Jeopardy,and Final Jeopardy) relationships between shows and clues
+load csv with headers from "file:C:/temp/jeop.csv" as jeopardy
+match (a: Show {showId: jeopardy.showNumber}),(b:Clue {clueId: jeopardy.clueId}) 
+create (a) - [r:Jeopardy {category:jeopardy.Category}] ->(b)
+
+load csv with headers from "file:C:/temp/doubleJ.csv" as doubleJ
+match (a: Show {showId: doubleJ.showNumber}),(b:Clue {clueId: doubleJ.clueId}) 
+create (a) - [r:DoubleJ {category:doubleJ.Category}] ->(b)
+
+load csv with headers from "file:C:/temp/finalJ.csv" as finalJ
+match (a: Show {showId: finalJ.showNumber}),(b:Clue {clueId: finalJ.clueId}) 
+create (a) - [r:FinalJ {category:finalJ.Category}] ->(b)
+
+--check the data:
+match(n) return(n)
+
+--Neo4J will display the "show" as the center node, each of the three "rounds" as relationships connecting to "clues"
+
+--3. Write at least one Cypher query against your newly created Neo4j database.
+
+--find all Double Jeopardy categories for showId 4680
+
+match (s:Show {showId:"4680"})-[d:DoubleJ]->(b) return distinct d.category
+
+--result:
+--"X"s & "O"s
+--MUSICAL TRAINS
+--THAT OLD-TIME RELIGION
+--AIRLINE TRAVEL
+--DR. SEUSS AT THE MULTIPLEX
+--PRESIDENTIAL STATES OF BIRTH
+
+--4. What are the advantages and disadvantages of having this information in a graph database instead of a relational
+--database?
+
+--Answer:
+--Due to the large number of nodes that exist for each Jeopardy show the data doesn't display well as a graph.  
+--In addition, displaying complex relationships is one of the greatest advantages of graph databases in general, 
+--but this data set has fairly simple relationships. Therefore, I think that a relational database would be a 
+--better fit for this type of data.  The table views and queries available in a relational database would work well
+--for this data set.
